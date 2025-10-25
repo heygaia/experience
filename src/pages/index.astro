@@ -1,16 +1,151 @@
 ---
+// src/pages/index.astro
+import Layout from "../layouts/Layout.astro";
+import { siteConfig } from "../config/site";
 
+const meta = {
+  title: "Experience Company | Building Technology That Matters",
+  description: "We're a team of hackers, engineers, and designers building innovative solutions like GAIA AI, smart wearables, and household robotics.",
+  image: "/assets/og-home.png",
+};
+import { ArrowRight, ChevronDown } from "lucide-react";
+
+const projects = [
+  {
+    name: "GAIA",
+    url: "https://heygaia.io",
+    description: "Personal AI assistant",
+    status: "Live",
+  },
+  {
+    name: "unkown",
+    url: null,
+    description: "Smart Wearables",
+    status: "Coming soon",
+  },
+  {
+    name: "unknown",
+    url: null,
+    description: "Household Robotics",
+    status: "Coming soon",
+  },
+];
+
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: siteConfig.name,
+  url: siteConfig.url,
+  logo: `${siteConfig.url}/favicon.ico`,
+  description: meta.description,
+  foundingDate: "2023",
+  areaServed: "Worldwide",
+  contactPoint: {
+    "@type": "ContactPoint",
+    contactType: "General",
+  },
+  sameAs: [
+    `https://twitter.com/${siteConfig.social.twitter?.replace("@", "")}`,
+    `https://github.com/${siteConfig.social.github}`,
+  ],
+};
+
+const productsSchema = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  itemListElement: projects.map((project, index) => ({
+    "@type": "Product",
+    position: index + 1,
+    name: project.name,
+    description: project.description,
+    url: project.url || siteConfig.url,
+    manufacturer: {
+      "@type": "Organization",
+      name: siteConfig.name,
+    },
+  })),
+};
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout {...meta}>
+  <fragment slot="head">
+    <script type="application/ld+json">{JSON.stringify(organizationSchema)}</script>
+    <script type="application/ld+json">{JSON.stringify(productsSchema)}</script>
+  </fragment>
+
+  <article class="space-y-4">
+    <section class="space-y-4 text-justify">
+
+      <!-- <img src="/adam.webp" class="sm:w-[60%] py-4 w-full" /> -->
+      <h1 class="font-light leading-relaxed ">
+        We're a bunch of hackers, engineers, and designers obsessed and passionate
+        about building things that actually make an impact.
+      </h1>
+
+      <p class="font-light text-base text-zinc-300 leading-relaxed">
+        Everything we make is designed with care, attention to detail, and a focus
+        and dedication to improving everyday lives.
+      </p>
+
+      <p class="font-light text-base text-zinc-300 leading-relaxed">
+        We believe in changing the world and creating a better <span class="font-bold! text-white">experience</span> for humanity.
+      </p>
+    </section>
+
+    <section aria-labelledby="projects-heading">
+      <h2 id="projects-heading" class="font-light! mb-4">
+        Our current and future projects :
+      </h2>
+
+      <div class="grid gap-4 grid-cols-1 sm:grid-cols-3">
+        {projects.map((project) => (
+          <div
+            class="p-3 border border-dashed border-zinc-700 hover:bg-zinc-900 transition-colors flex flex-col gap-1"
+            itemscope
+            itemtype="https://schema.org/Product"
+          >
+            {project.url ? (
+              <a
+                href={project.url}
+                class="group flex flex-col h-full gap-1 no-underline hover:text-white"
+                aria-label={`Learn more about ${project.name}`}
+              >
+                <h3 class="text-base font-semibold" itemprop="name">
+                  {project.name}
+                </h3>
+                <p class="text-sm font-light text-zinc-400 lowercase" itemprop="description">
+                  {project.description}
+                </p>
+                <div class="text-xs group-hover:underline text-right flex items-center gap-1 w-full justify-end">
+                  <span>view more</span>
+                  <ArrowRight size={13}/>
+                </div>
+              </a>
+            ) : (
+              <>
+                <h3 class="text-base font-semibold blur-sm" itemprop="name">
+                  {project.name}
+                </h3>
+                <p class="text-sm font-light text-zinc-400 flex-1 lowercase" itemprop="description">
+                  {project.description}
+                </p>
+                <span class="text-xs text-right text-zinc-500 mt-auto lowercase">
+                  {project.status}
+                </span>
+              </>
+            )}
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section>
+      <blockquote cite="https://en.wikipedia.org/wiki/Steve_Jobs" class="font-light italic text-sm text-zinc-400">
+        <p>
+          "The people who are crazy enough to think they can change the world are
+          the ones who do." — Steve
+        </p>
+      </blockquote>
+    </section>
+</article>
+</Layout>
