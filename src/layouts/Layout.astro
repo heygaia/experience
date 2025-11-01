@@ -1,95 +1,92 @@
 ---
-import { Font } from 'astro:assets'
-import '../styles/global.css'
-import Footer from './Footer.astro'
-import Navbar from './Navbar.astro'
-import { siteConfig } from '../config/site'
+import { Font } from "astro:assets";
+import "../styles/global.css";
+import Footer from "./Footer.astro";
+import Navbar from "./Navbar.astro";
+import { siteConfig } from "../config/site";
 
 interface Props {
-	title?: string
-	description?: string
-	image?: string
-	url?: string
-	lang?: string
-	canonical?: string
+  title?: string;
+  description?: string;
+  image?: string;
+  url?: string;
+  lang?: string;
+  canonical?: string;
 }
 
 const {
-	title = siteConfig.name,
-	description = siteConfig.description,
-	image = siteConfig.ogImage,
-	url = siteConfig.url,
-	lang = siteConfig.lang,
-	canonical = url,
-} = Astro.props as Props
+  title = siteConfig.name,
+  description = siteConfig.description,
+  image = siteConfig.ogImage,
+  url = siteConfig.url,
+  lang = siteConfig.lang,
+  canonical = url,
+} = Astro.props as Props;
 
-const siteName = siteConfig.name
-const fullTitle = title
-const twitterCard = siteConfig.twitterCard
-
-const jsonLd = {
-	"@context": "https://schema.org",
-	"@type": "WebSite",
-	url: canonical,
-	name: fullTitle,
-	description,
-	keywords: siteConfig.keywords.join(", "),
-	publisher: {
-		"@type": "Organization",
-		name: siteName,
-		url,
-	},
-}
+const siteName = siteConfig.name;
+const fullTitle = title;
+const twitterCard = siteConfig.twitterCard;
+const ogImage = image.startsWith("http") ? image : `${siteConfig.url}${image}`;
 ---
 
 <html lang={lang} class="bg-black text-white sm:p-10 p-5">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<title>{fullTitle}</title>
-		<meta name="description" content={description} />
-		<meta name="keywords" content={siteConfig.keywords.join(", ")} />
-		<meta name="author" content={siteConfig.author} />
-		<link rel="canonical" href={canonical} />
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="keywords" content={siteConfig.keywords.join(", ")} />
+    <meta name="author" content={siteConfig.author} />
+    <link rel="canonical" href={canonical} />
+    <link rel="sitemap" href="/sitemap-index.xml" />
 
-		<!-- Font: Doto -->
-		<Font cssVariable="--font-doto" preload />
+    <!-- Font: Doto -->
+    <Font cssVariable="--font-doto" preload />
 
-		<!-- Open Graph -->
-		<meta property="og:locale" content={lang} />
-		<meta property="og:type" content="website" />
-		<meta property="og:title" content={fullTitle} />
-		<meta property="og:description" content={description} />
-		<meta property="og:url" content={canonical} />
-		<meta property="og:site_name" content={siteName} />
-		<meta property="og:image" content={image} />
+    <!-- Open Graph -->
+    <meta property="og:locale" content={lang} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content={siteName} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:secure_url" content={ogImage} />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={fullTitle} />
 
-		<!-- Twitter -->
-		<meta name="twitter:card" content={twitterCard} />
-		<meta name="twitter:title" content={fullTitle} />
-		<meta name="twitter:description" content={description} />
-		<meta name="twitter:image" content={image} />
+    <!-- Twitter -->
+    <meta name="twitter:card" content={twitterCard} />
+    <meta name="twitter:site" content={siteConfig.social.twitter} />
+    <meta name="twitter:creator" content={siteConfig.social.twitter} />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={fullTitle} />
 
-		<meta name="theme-color" content="#ffffff" />
+    <meta name="theme-color" content="#000000" />
 
-		<!-- Favicons -->
-		<link rel="icon" href="/favicon.ico" />
+    <!-- Favicons -->
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" href="/logo.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-16x16.png" sizes="16x16" type="image/png" />
+    <link rel="icon" href="/favicon-32x32.png" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
+    <link rel="manifest" href="/site.webmanifest" />
 
-		<!-- JSON-LD structured data -->
-		<script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
+    <!-- Head slot for page-specific additions -->
+    <slot name="head" />
+  </head>
 
-		<!-- Head slot for page-specific additions -->
-		<slot name="head" />
-	</head>
-
-	<body class="space-y-4">
+  <body class="space-y-4">
     <Navbar />
 
     <main id="content" class="space-y-4 sm:max-w-2xl">
-        <slot />
+      <slot />
     </main>
 
     <Footer />
-	</body>
+  </body>
 </html>
-

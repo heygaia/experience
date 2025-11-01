@@ -1,11 +1,18 @@
 ---
+import { Image } from "astro:assets";
 import { siteConfig } from "../config/site";
 ---
 
-<header role="banner">
+<header role="banner" class="mb-8">
   <nav aria-label="Primary navigation">
-    <a href="/" class="underline" title="Return to homepage"
-      >{siteConfig.name}</a
-    >
+    <a href="/" class="underline" title="Return to homepage">
+      <Image
+        src={siteConfig.logo_2}
+        alt={`${siteConfig.name} logo`}
+        width={300}
+        height={40}
+        class="inline-block align-middle"
+      />
+    </a>
   </nav>
 </header>

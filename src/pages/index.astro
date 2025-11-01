@@ -1,48 +1,83 @@
 ---
 // src/pages/index.astro
-import Layout from "../layouts/Layout.astro";
+import { Image } from "astro:assets";
+import { ArrowRight } from "lucide-react";
 import { siteConfig } from "../config/site";
+import Layout from "../layouts/Layout.astro";
+
+const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
 
 const meta = {
-  title: "Experience Company | Building Technology That Matters",
-  description: "We're a team of hackers, engineers, and designers building innovative solutions like GAIA AI, smart wearables, and household robotics.",
-  image: "/assets/og-home.png",
+  title: "the experience company",
+  description:
+    "We're a team of hackers, engineers, and designers behind products like GAIA. Creating technology that improves everyday lives.",
+  image: `${siteConfig.url}/og-image.webp`,
+  url: canonicalURL,
+  canonical: canonicalURL,
 };
-import { ArrowRight, ChevronDown } from "lucide-react";
 
 const projects = [
   {
+    logo: "/gaia.webp",
     name: "GAIA",
     url: "https://heygaia.io",
     description: "Personal AI assistant",
     status: "Live",
+    category: "Artificial Intelligence",
   },
   {
-    name: "unkown",
+    name: "Smart Wearables",
     url: null,
-    description: "Smart Wearables",
+    description: "next-gen wearables",
     status: "Coming soon",
+    category: "Wearable Technology",
   },
   {
-    name: "unknown",
+    name: "Household Robotics",
     url: null,
-    description: "Household Robotics",
+    description: "Household robotics",
     status: "Coming soon",
+    category: "Robotics",
   },
 ];
 
 const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
+  "@id": `${siteConfig.url}/#organization`,
   name: siteConfig.name,
+  alternateName: "Experience Company",
   url: siteConfig.url,
-  logo: `${siteConfig.url}/favicon.ico`,
+  logo: {
+    "@type": "ImageObject",
+    url: `${siteConfig.url}/logo.svg`,
+    width: 512,
+    height: 512,
+  },
   description: meta.description,
   foundingDate: "2023",
-  areaServed: "Worldwide",
+  foundingLocation: {
+    "@type": "Place",
+    name: "Global",
+  },
+  areaServed: {
+    "@type": "Place",
+    name: "Worldwide",
+  },
+  slogan: "Building Technology That Matters",
+  knowsAbout: [
+    "Artificial Intelligence",
+    "Software Development",
+    "Product Design",
+    "Wearable Technology",
+    "Robotics",
+    "User Experience Design",
+  ],
   contactPoint: {
     "@type": "ContactPoint",
-    contactType: "General",
+    contactType: "General Inquiries",
+    email: siteConfig.social.email,
+    availableLanguage: ["en"],
   },
   sameAs: [
     `https://twitter.com/${siteConfig.social.twitter?.replace("@", "")}`,
@@ -53,99 +88,302 @@ const organizationSchema = {
 const productsSchema = {
   "@context": "https://schema.org",
   "@type": "ItemList",
+  name: "Experience Company Products and Services",
+  description: "Innovative technology solutions from Experience Company",
+  numberOfItems: projects.length,
   itemListElement: projects.map((project, index) => ({
-    "@type": "Product",
+    "@type": "ListItem",
     position: index + 1,
-    name: project.name,
-    description: project.description,
-    url: project.url || siteConfig.url,
-    manufacturer: {
-      "@type": "Organization",
-      name: siteConfig.name,
+    item: {
+      "@type": project.url ? "SoftwareApplication" : "Product",
+      "@id":
+        project.url ||
+        `${siteConfig.url}/#${project.name.toLowerCase().replace(/\s+/g, "-")}`,
+      name: project.name,
+      description: project.description,
+      url: project.url || siteConfig.url,
+      applicationCategory: project.category,
+      operatingSystem: "Web, iOS, Android",
+      manufacturer: {
+        "@type": "Organization",
+        "@id": `${siteConfig.url}/#organization`,
+        name: siteConfig.name,
+      },
     },
   })),
+};
+
+const webPageSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "@id": `${canonicalURL}#webpage`,
+  url: canonicalURL,
+  name: meta.title,
+  description: meta.description,
+  inLanguage: "en-US",
+  isPartOf: {
+    "@type": "WebSite",
+    "@id": `${siteConfig.url}/#website`,
+    url: siteConfig.url,
+    name: siteConfig.name,
+    publisher: {
+      "@id": `${siteConfig.url}/#organization`,
+    },
+  },
+  about: {
+    "@id": `${siteConfig.url}/#organization`,
+  },
+  primaryImageOfPage: {
+    "@type": "ImageObject",
+    url: meta.image,
+    width: 1200,
+    height: 630,
+  },
+  datePublished: "2023-01-01T00:00:00+00:00",
+  dateModified: new Date().toISOString(),
+};
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    {
+      "@type": "ListItem",
+      position: 1,
+      name: "Home",
+      item: siteConfig.url,
+    },
+  ],
+};
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [
+    {
+      "@type": "Question",
+      name: "What does Experience Company do?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Experience Company builds innovative technology solutions including GAIA AI personal assistant, smart wearables, and household robotics. We focus on creating products that improve everyday lives through careful design and attention to detail.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "What is GAIA?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "GAIA is our personal AI assistant that helps you stay organized and productive. It's currently live and available at heygaia.io.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "What products are coming soon from Experience Company?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "We're currently developing smart wearables for health and productivity, as well as intelligent robotics solutions for modern homes.",
+      },
+    },
+  ],
 };
 ---
 
 <Layout {...meta}>
   <fragment slot="head">
-    <script type="application/ld+json">{JSON.stringify(organizationSchema)}</script>
-    <script type="application/ld+json">{JSON.stringify(productsSchema)}</script>
+    <meta
+      name="robots"
+      content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+    />
+    <meta name="googlebot" content="index, follow" />
+    <meta name="bingbot" content="index, follow" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="en_US" />
+    <meta
+      property="article:publisher"
+      content={`https://twitter.com/${siteConfig.social.twitter?.replace("@", "")}`}
+    />
+    <meta name="twitter:site" content={siteConfig.social.twitter} />
+    <meta name="twitter:creator" content={siteConfig.social.twitter} />
+
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify(organizationSchema)}
+    />
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify(productsSchema)}
+    />
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify(webPageSchema)}
+    />
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify(breadcrumbSchema)}
+    />
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
   </fragment>
 
-  <article class="space-y-4">
-    <section class="space-y-4 text-justify">
+  <article class="space-y-4" itemscope itemtype="https://schema.org/WebPage">
+    <meta itemprop="name" content={meta.title} />
+    <meta itemprop="description" content={meta.description} />
 
-      <!-- <img src="/adam.webp" class="sm:w-[60%] py-4 w-full" /> -->
-      <h1 class="font-light leading-relaxed ">
-        We're a bunch of hackers, engineers, and designers obsessed and passionate
-        about building things that actually make an impact.
+    <section
+      class="space-y-4 text-justify"
+      itemscope
+      itemtype="https://schema.org/Organization"
+    >
+      <meta itemprop="name" content={siteConfig.name} />
+      <meta itemprop="url" content={siteConfig.url} />
+      <link itemprop="logo" href={`${siteConfig.url}/logo.svg`} />
+
+      <h1 class="font-light leading-relaxed" itemprop="slogan">
+        We're a bunch of hackers, engineers, and designers obsessed and
+        passionate about building things that actually make an impact.
       </h1>
 
-      <p class="font-light text-base text-zinc-300 leading-relaxed">
-        Everything we make is designed with care, attention to detail, and a focus
-        and dedication to improving everyday lives.
+      <p
+        class="font-light text-base text-zinc-300 leading-relaxed"
+        itemprop="description"
+      >
+        Everything we make is designed with care, attention to detail, and a
+        focus and dedication to improving everyday lives through innovative
+        technology solutions.
       </p>
 
       <p class="font-light text-base text-zinc-300 leading-relaxed">
-        We believe in changing the world and creating a better <span class="font-bold! text-white">experience</span> for humanity.
+        We believe in making an impact and creating a better <span
+          class="font-bold! text-white">experience</span
+        > for humanity through cutting-edge AI, wearable technology, and robotics.
       </p>
     </section>
 
-    <section aria-labelledby="projects-heading">
-      <h2 id="projects-heading" class="font-light! mb-4">
-        Our current and future projects :
+    <section
+      aria-labelledby="projects-heading"
+      itemscope
+      itemtype="https://schema.org/ItemList"
+    >
+      <h2 id="projects-heading" class="font-light! mb-4" itemprop="name">
+        Our current and future projects:
       </h2>
+      <meta
+        itemprop="description"
+        content="Innovative technology products from Experience Company including GAIA AI, smart wearables, and household robotics"
+      />
 
-      <div class="grid gap-4 grid-cols-1 sm:grid-cols-3">
-        {projects.map((project) => (
-          <div
-            class="p-3 border border-dashed border-zinc-700 hover:bg-zinc-900 transition-colors flex flex-col gap-1"
-            itemscope
-            itemtype="https://schema.org/Product"
-          >
-            {project.url ? (
-              <a
-                href={project.url}
-                class="group flex flex-col h-full gap-1 no-underline hover:text-white"
-                aria-label={`Learn more about ${project.name}`}
-              >
-                <h3 class="text-base font-semibold" itemprop="name">
-                  {project.name}
-                </h3>
-                <p class="text-sm font-light text-zinc-400 lowercase" itemprop="description">
-                  {project.description}
-                </p>
-                <div class="text-xs group-hover:underline text-right flex items-center gap-1 w-full justify-end">
-                  <span>view more</span>
-                  <ArrowRight size={13}/>
-                </div>
-              </a>
-            ) : (
-              <>
-                <h3 class="text-base font-semibold blur-sm" itemprop="name">
-                  {project.name}
-                </h3>
-                <p class="text-sm font-light text-zinc-400 flex-1 lowercase" itemprop="description">
-                  {project.description}
-                </p>
-                <span class="text-xs text-right text-zinc-500 mt-auto lowercase">
-                  {project.status}
-                </span>
-              </>
-            )}
-          </div>
-        ))}
+      <div class="grid gap-4 grid-cols-1 sm:grid-cols-3" role="list">
+        {
+          projects.map((project, index) => (
+            <div
+              class="p-3 border border-dashed border-zinc-700 hover:bg-zinc-900 transition-colors flex flex-col gap-1"
+              itemscope
+              itemtype={
+                project.url
+                  ? "https://schema.org/SoftwareApplication"
+                  : "https://schema.org/Product"
+              }
+              itemprop="itemListElement"
+              role="listitem"
+            >
+              <meta itemprop="position" content={String(index + 1)} />
+              <meta itemprop="applicationCategory" content={project.category} />
+
+              {project.url ? (
+                <a
+                  href={project.url}
+                  class="group flex flex-col h-full gap-1 no-underline hover:text-white"
+                  aria-label={`Learn more about ${project.name} - ${project.description}`}
+                  itemprop="url"
+                  rel="noopener"
+                  target="_blank"
+                >
+                  {project.logo ? (
+                    <>
+                      <Image
+                        src={project.logo}
+                        alt={`${project.name} logo - ${project.description}`}
+                        width={50}
+                        height={50}
+                        class="object-contain w-full max-w-20"
+                        loading="eager"
+                        itemprop="image"
+                      />
+                      <meta itemprop="name" content={project.name} />
+                    </>
+                  ) : (
+                    <h3 class="text-base font-semibold" itemprop="name">
+                      {project.name}
+                    </h3>
+                  )}
+                  <p
+                    class="text-sm font-light text-zinc-400 lowercase"
+                    itemprop="description"
+                  >
+                    {project.description}
+                  </p>
+                  <div
+                    class="text-xs group-hover:underline text-right flex items-center gap-1 w-full justify-end"
+                    aria-label="Learn more"
+                  >
+                    <span>view more</span>
+                    <ArrowRight size={13} aria-hidden="true" />
+                  </div>
+                </a>
+              ) : (
+                <>
+                  {project.logo ? (
+                    <>
+                      <Image
+                        src={project.logo}
+                        alt={`${project.name} logo - Coming soon`}
+                        width={400}
+                        height={100}
+                        class="object-contain w-full"
+                        loading="lazy"
+                        itemprop="image"
+                      />
+                      <meta itemprop="name" content={project.name} />
+                    </>
+                  ) : (
+                    <h3 class="text-base font-semibold blur-sm" itemprop="name">
+                      {project.name}
+                    </h3>
+                  )}
+                  <p
+                    class="text-sm font-light text-zinc-400 flex-1 lowercase"
+                    itemprop="description"
+                  >
+                    {project.description}
+                  </p>
+                  <span
+                    class="text-xs text-right text-zinc-400 mt-auto lowercase"
+                    aria-label={`Status: ${project.status}`}
+                  >
+                    {project.status}
+                  </span>
+                </>
+              )}
+            </div>
+          ))
+        }
       </div>
     </section>
 
-    <section>
-      <blockquote cite="https://en.wikipedia.org/wiki/Steve_Jobs" class="font-light italic text-sm text-zinc-400">
-        <p>
-          "The people who are crazy enough to think they can change the world are
-          the ones who do." — Steve
+    <section aria-label="Inspiration">
+      <blockquote
+        cite="https://en.wikipedia.org/wiki/Steve_Jobs"
+        class="font-light italic text-sm text-zinc-400"
+        itemscope
+        itemtype="https://schema.org/Quotation"
+      >
+        <p itemprop="text">
+          "The people who are crazy enough to think they can change the world
+          are the ones who do."
         </p>
+        <cite itemprop="creator" itemscope itemtype="https://schema.org/Person">
+          — <span itemprop="name">Steve Jobs</span>
+        </cite>
       </blockquote>
     </section>
-</article>
+  </article>
 </Layout>
