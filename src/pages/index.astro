@@ -135,12 +135,65 @@ const webPageSchema = {
   },
   primaryImageOfPage: {
     "@type": "ImageObject",
+    "@id": `${meta.image}#image`,
     url: meta.image,
+    contentUrl: meta.image,
     width: 1200,
     height: 630,
+    caption: meta.description,
+    inLanguage: "en-US",
+    license: siteConfig.url,
   },
   datePublished: "2023-01-01T00:00:00+00:00",
   dateModified: new Date().toISOString(),
+};
+
+// Enhanced image schema for OG image
+const ogImageSchema = {
+  "@context": "https://schema.org",
+  "@type": "ImageObject",
+  "@id": `${meta.image}#image`,
+  url: meta.image,
+  contentUrl: meta.image,
+  width: 1200,
+  height: 630,
+  caption:
+    "The Experience Company - A team of hackers, engineers, and designers building technology that matters",
+  description: meta.description,
+  name: meta.title,
+  inLanguage: "en-US",
+  license: siteConfig.url,
+  acquireLicensePage: siteConfig.url,
+  creditText: siteConfig.name,
+  creator: {
+    "@type": "Organization",
+    "@id": `${siteConfig.url}/#organization`,
+    name: siteConfig.name,
+  },
+  copyrightNotice: `Copyright © ${new Date().getFullYear()} ${siteConfig.name}. All rights reserved.`,
+};
+
+// GAIA logo image schema
+const gaiaImageSchema = {
+  "@context": "https://schema.org",
+  "@type": "ImageObject",
+  "@id": `${siteConfig.url}/gaia.webp#image`,
+  url: `${siteConfig.url}/gaia.webp`,
+  contentUrl: `${siteConfig.url}/gaia.webp`,
+  name: "GAIA - Personal AI Assistant Logo",
+  caption:
+    "GAIA logo - An intelligent personal AI assistant for productivity and organization",
+  description: "Logo for GAIA, the personal AI assistant by Experience Company",
+  width: 50,
+  height: 50,
+  inLanguage: "en-US",
+  license: siteConfig.url,
+  creator: {
+    "@type": "Organization",
+    "@id": `${siteConfig.url}/#organization`,
+    name: siteConfig.name,
+  },
+  copyrightNotice: `Copyright © ${new Date().getFullYear()} ${siteConfig.name}. All rights reserved.`,
 };
 
 const breadcrumbSchema = {
@@ -222,6 +275,14 @@ const faqSchema = {
       set:html={JSON.stringify(breadcrumbSchema)}
     />
     <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify(ogImageSchema)}
+    />
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify(gaiaImageSchema)}
+    />
   </fragment>
 
   <article class="space-y-4" itemscope itemtype="https://schema.org/WebPage">

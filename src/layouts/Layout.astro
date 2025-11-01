@@ -39,6 +39,12 @@ const ogImage = image.startsWith("http") ? image : `${siteConfig.url}${image}`;
     <meta name="author" content={siteConfig.author} />
     <link rel="canonical" href={canonical} />
     <link rel="sitemap" href="/sitemap-index.xml" />
+    <link
+      rel="sitemap"
+      type="application/xml"
+      title="Image Sitemap"
+      href="/image-sitemap.xml"
+    />
 
     <!-- Font: Doto -->
     <Font cssVariable="--font-doto" preload />
