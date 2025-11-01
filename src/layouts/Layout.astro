@@ -3,6 +3,7 @@ import { Font } from "astro:assets";
 import "../styles/global.css";
 import Footer from "./Footer.astro";
 import Navbar from "./Navbar.astro";
+import GoogleAnalytics from "../components/GoogleAnalytics.astro";
 import { siteConfig } from "../config/site";
 
 interface Props {
@@ -79,8 +80,14 @@ const ogImage = image.startsWith("http") ? image : `${siteConfig.url}${image}`;
     <link rel="icon" href="/logo.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
     <link rel="manifest" href="/site.webmanifest" />
+
+    <!-- Google Analytics -->
+    {
+      siteConfig.googleAnalyticsId && (
+        <GoogleAnalytics id={siteConfig.googleAnalyticsId} />
+      )
+    }
 
     <!-- Head slot for page-specific additions -->
     <slot name="head" />

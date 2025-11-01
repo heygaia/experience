@@ -30,6 +30,9 @@ export const siteConfig = {
     "digital experiences",
   ],
   author: "Experience Company",
+
+  // Analytics
+  googleAnalyticsId: "G-H8H1YPQ3D0",
 } as const;
 
 export type SiteConfig = typeof siteConfig;
