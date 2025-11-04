@@ -85,34 +85,6 @@ const organizationSchema = {
   ],
 };
 
-const productsSchema = {
-  "@context": "https://schema.org",
-  "@type": "ItemList",
-  name: "Experience Company Products and Services",
-  description: "Innovative technology solutions from Experience Company",
-  numberOfItems: projects.length,
-  itemListElement: projects.map((project, index) => ({
-    "@type": "ListItem",
-    position: index + 1,
-    item: {
-      "@type": project.url ? "SoftwareApplication" : "Product",
-      "@id":
-        project.url ||
-        `${siteConfig.url}/#${project.name.toLowerCase().replace(/\s+/g, "-")}`,
-      name: project.name,
-      description: project.description,
-      url: project.url || siteConfig.url,
-      applicationCategory: project.category,
-      operatingSystem: "Web, iOS, Android",
-      manufacturer: {
-        "@type": "Organization",
-        "@id": `${siteConfig.url}/#organization`,
-        name: siteConfig.name,
-      },
-    },
-  })),
-};
-
 const webPageSchema = {
   "@context": "https://schema.org",
   "@type": "WebPage",
@@ -188,6 +160,8 @@ const gaiaImageSchema = {
   height: 50,
   inLanguage: "en-US",
   license: siteConfig.url,
+  acquireLicensePage: siteConfig.url,
+  creditText: siteConfig.name,
   creator: {
     "@type": "Organization",
     "@id": `${siteConfig.url}/#organization`,
@@ -261,10 +235,6 @@ const faqSchema = {
     <script
       type="application/ld+json"
       set:html={JSON.stringify(organizationSchema)}
-    />
-    <script
-      type="application/ld+json"
-      set:html={JSON.stringify(productsSchema)}
     />
     <script
       type="application/ld+json"
