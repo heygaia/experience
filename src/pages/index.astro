@@ -297,10 +297,6 @@ const faqSchema = {
       <h2 id="projects-heading" class="font-light! mb-4" itemprop="name">
         Our current and future projects:
       </h2>
-      <meta
-        itemprop="description"
-        content="Innovative technology products from Experience Company including GAIA AI, smart wearables, and household robotics"
-      />
 
       <div class="grid gap-4 grid-cols-1 sm:grid-cols-3" role="list">
         {
@@ -316,9 +312,6 @@ const faqSchema = {
               itemprop="itemListElement"
               role="listitem"
             >
-              <meta itemprop="position" content={String(index + 1)} />
-              <meta itemprop="applicationCategory" content={project.category} />
-
               {project.url ? (
                 <a
                   href={project.url}
@@ -339,7 +332,6 @@ const faqSchema = {
                         loading="eager"
                         itemprop="image"
                       />
-                      <meta itemprop="name" content={project.name} />
                     </>
                   ) : (
                     <h3 class="text-base font-semibold" itemprop="name">
@@ -373,7 +365,6 @@ const faqSchema = {
                         loading="lazy"
                         itemprop="image"
                       />
-                      <meta itemprop="name" content={project.name} />
                     </>
                   ) : (
                     <h3 class="text-base font-semibold blur-sm" itemprop="name">
