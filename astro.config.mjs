@@ -29,5 +29,10 @@ export default defineConfig({
     plugins: [tailwindcss()],
   },
 
-  integrations: [react(), sitemap({})],
+  integrations: [
+    react(),
+    sitemap({
+      customPages: ["https://heygaia.io"],
+    }),
+  ],
 });
